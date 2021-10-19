@@ -11,7 +11,7 @@ namespace TecnicalTestLibraryMVC.Controllers
     public class BooksController : Controller
     {
         // GET: BooksController
-        public ActionResult<BookViewModel> Index()
+        public ActionResult<BookViewModel> Index(string searchString)
         {
             IEnumerable<BookViewModel> books = null;
 
@@ -39,6 +39,11 @@ namespace TecnicalTestLibraryMVC.Controllers
 
                     ModelState.AddModelError(string.Empty, "Server error. Contact the administrator.");
                 }
+            }
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                books = books.Where(p => p.Title.StartsWith(searchString, StringComparison.CurrentCultureIgnoreCase) || Convert.ToString(p.AuthorId).StartsWith(searchString, StringComparison.CurrentCultureIgnoreCase) || p.Date.ToShortDateString().StartsWith(searchString, StringComparison.CurrentCultureIgnoreCase)).ToList();
             }
 
             return View(books);

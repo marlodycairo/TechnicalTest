@@ -12,7 +12,7 @@ namespace TecnicalTestLibraryMVC.Controllers
     public class AuthorsController : Controller
     {
         // GET: AuthorsController
-        public ActionResult<AuthorViewModel> Index()
+        public ActionResult<AuthorViewModel> Index(string searchString)
         {
             IEnumerable<AuthorViewModel> authors = null;
 
@@ -41,6 +41,12 @@ namespace TecnicalTestLibraryMVC.Controllers
                     ModelState.AddModelError(string.Empty, "Server error. Contact the administrator.");
                 }
             }
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                authors = authors.Where(p => p.FullName.StartsWith(searchString, StringComparison.CurrentCultureIgnoreCase) || p.CityOrigin.StartsWith(searchString, StringComparison.CurrentCultureIgnoreCase)).ToList();
+            }
+
             return View(authors);
         }
 
